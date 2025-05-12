@@ -10,7 +10,15 @@ const DATA_PATH = process.env.DATA_PATH;
 const fs = require('fs');
 
 const filePath = path.join(__dirname, DATA_PATH);
-const TRAILERFLIX = JSON.parse(require('fs').readFileSync(filePath, 'utf-8'));
+
+let TRAILERFLIX = []
+try {
+  TRAILERFLIX = JSON.parse(require('fs').readFileSync(filePath, 'utf-8'));
+} catch (error) {
+  console.error('Error al leer el archivo json', error.message);
+  TRAILERFLIX = [];
+}
+
 
 
 app.get('/', (req, res) => {
@@ -31,32 +39,54 @@ app.get('/titulo/:title', (req, res) => {
   const resultado = TRAILERFLIX.filter(item =>
     item.titulo.toLowerCase().includes(title.toLowerCase())
   );
+  if(resultado.length==0){
+        return res.status(404).json({
+            mensaje:'No se encontró contenido con ese título'
+        })
+  }
   res.json(resultado);
 });
 
 
 app.get('/categoria/:cat', (req, res) => {
-  const { cat } = req.params;
-  const categoriaFiltrada = TRAILERFLIX.filter(item =>
-    item.categoria.toLowerCase() === cat.toLowerCase()
-  );
-  res.json(categoriaFiltrada);
+  const cat  = req.params.cat.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  if(cat ==='serie'|| cat==='pelicula'){
+    const categoriaFiltrada = TRAILERFLIX.filter(item =>
+    item.categoria.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === cat);
+    res.json(categoriaFiltrada);
+  }else{
+    res.status(404).json({
+      mensaje : "Contenido no disponible. Verifique la categoría ingresada"
+    })
+  }
+  
 });
 
 app.get('/reparto/:act', (req, res) => {
   const { act } = req.params;
-  const resultado = TRAILERFLIX
-    .filter(item => item.reparto.toLowerCase().includes(act.toLowerCase()))
+  const peliReparto = TRAILERFLIX
+    .filter(item => item.reparto.trim().toLowerCase().includes(act.trim().toLowerCase()))
     .map(item => ({
       titulo: item.titulo,
       reparto: item.reparto
     }));
-  res.json(resultado);
+  if(peliReparto.length==0){
+    return res.status(404).json({
+      "mensaje":'No se encontró contenido. Verifique reparto'
+    })
+  }
+  res.json(peliReparto);
 });
 
 
 app.get('/trailer/:id', (req, res) => {
   const { id } = req.params;
+
+  if(isNaN(id)){
+    return res.status(400).json({error: 'El ID debe ser un número'})
+  }
+
   const contenido = TRAILERFLIX.find(item => item.id === parseInt(id));
 
   if (!contenido) {
