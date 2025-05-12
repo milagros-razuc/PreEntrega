@@ -4,13 +4,13 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config(); 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3008;
 const DATA_PATH = process.env.DATA_PATH;
 
 const fs = require('fs');
 
 const filePath = path.join(__dirname, DATA_PATH);
-const TRAILERFLIX = JSON.parse(require('fs').readFileSync(filePath, 'utf-8'));
+const TRAILERFLIX = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
 
 app.get('/', (req, res) => {
@@ -18,11 +18,11 @@ app.get('/', (req, res) => {
     pelis: TRAILERFLIX
   };
 
-  res.render('index', data);
+  res.status(202).render('index', data);
 });
 
 app.get('/catalogo', (req, res) => {
-  res.render('catalogo', { pelis: TRAILERFLIX });
+  res.status(202).render('catalogo', { pelis: TRAILERFLIX });
 });
 
 
@@ -31,7 +31,7 @@ app.get('/titulo/:title', (req, res) => {
   const resultado = TRAILERFLIX.filter(item =>
     item.titulo.toLowerCase().includes(title.toLowerCase())
   );
-  res.json(resultado);
+  res.status(202).json(resultado);
 });
 
 
@@ -40,7 +40,7 @@ app.get('/categoria/:cat', (req, res) => {
   const categoriaFiltrada = TRAILERFLIX.filter(item =>
     item.categoria.toLowerCase() === cat.toLowerCase()
   );
-  res.json(categoriaFiltrada);
+  res.status(202).json(categoriaFiltrada);
 });
 
 app.get('/reparto/:act', (req, res) => {
@@ -51,7 +51,7 @@ app.get('/reparto/:act', (req, res) => {
       titulo: item.titulo,
       reparto: item.reparto
     }));
-  res.json(resultado);
+  res.status(202).json(resultado);
 });
 
 
@@ -69,7 +69,7 @@ app.get('/trailer/:id', (req, res) => {
     trailer: contenido?.trailer || "No disponible"
   };
 
-  res.json(respuesta);
+  res.status(202).json(respuesta);
 });
 
 app.use((req, res) => {
