@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>TRAILERFLIX - Catálogo</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #e50914;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background-color: #1f1f1f;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+    }
+
+    .card-body {
+      padding: 15px;
+    }
+
+    .card-body h3 {
+      margin-top: 0;
+      font-size: 1.2em;
+    }
+
+    .categoria {
+      font-size: 0.9em;
+      color: #e50914;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #1a1a1a;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 TRAILERFLIX</h1>
+    <p>Tu plataforma definitiva de trailers</p>
+  </header>
+
+  <main>
+    <% pelis.forEach(function(peli) { %>
+      <div class="card">
+        <img src="<%= peli.poster %>" alt="Poster de <%= peli.titulo %>">
+        <div class="card-body">
+          <h3><%= peli.titulo %></h3>
+          <p class="categoria"><%= peli.categoria %></p>
+          <p><strong>Género:</strong> <%= peli.genero %></p>
+          <%= peli.resumen ? peli.resumen.substring(0, 100) + "..." : "Sin resumen disponible" %>
+        </div>
+      </div>
+    <% }) %>
+  </main>
+
+  <footer>
+    &copy; <%= new Date().getFullYear() %> TRAILERFLIX - Todos los derechos reservados
+  </footer>
+</body>
+</html>
