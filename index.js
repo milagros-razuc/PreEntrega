@@ -10,7 +10,19 @@ const DATA_PATH = process.env.DATA_PATH;
 const fs = require('fs');
 
 const filePath = path.join(__dirname, DATA_PATH);
+<<<<<<< Updated upstream
 const TRAILERFLIX = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+=======
+
+let TRAILERFLIX = []
+try {
+  TRAILERFLIX = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+} catch (error) {
+  console.error('Error al leer el archivo json', error.message);
+  TRAILERFLIX = [];
+}
+
+>>>>>>> Stashed changes
 
 
 app.get('/', (req, res) => {
